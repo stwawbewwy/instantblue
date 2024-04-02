@@ -2,6 +2,8 @@
 
 The nameless blue sea~
 
+<img src="screenshot.png">
+
 ## Information
 Here is my setup:
 - **OS:** [Arch Linux](https://archlinux.org)  
