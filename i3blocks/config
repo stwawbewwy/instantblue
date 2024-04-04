@@ -5,7 +5,7 @@ signal=10
 
 [music]
 command=~/.config/i3blocks/music.sh
-interval=30
+interval=persist
 
 [brightness]
 command=~/.config/i3blocks/brightness.sh

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WARNING_SHOWN=0
+SHOW_WARNING=0
 
 RENMARIGAYSEX () {
     BATPERC=$(cat /sys/class/power_supply/BAT0/capacity)
@@ -8,13 +8,15 @@ RENMARIGAYSEX () {
 
     if [ "$BATSTAT" == "Charging" ]; then
         BATFORMATTED="󰂄 $BATPERC%"
-        WARNING_SHOWN=0
+        SHOW_WARNING=0
     else
         if [[ BATPERC -le 15 ]]; then
             BATFORMATTED="󰂃 $BATPERC%"
-            if [[ WARNING_SHOWN -eq 0 ]]; then
+            if [[ SHOW_WARNING -ge 5 ]]; then
                 notify-send -t 5000 "Low battery" "Please charge"
-                WARNING_SHOWN=1
+                SHOW_WARNING=0
+            else
+                SHOW_WARNING=$((SHOW_WARNING+1))
             fi
         elif [[ BATPERC -le 20 ]]; then
             BATFORMATTED="󰁺 $BATPERC%"
@@ -47,12 +49,12 @@ upower -m | {
         # echo "current: $TIMESTAMP"
         # echo "last: $LASTMSGTIMESTAMP"
         if [[ "$LASTMSGTIMESTAMP" == "$TIMESTAMP" ]] then
-          # echo "found repeat timestamp"
-          true # just to hide comment
+            # echo "found repeat timestamp"
+            true # just to hide comment
         else
-          LASTMSGTIMESTAMP=$TIMESTAMP
-          # echo "setting to $LASTMSGTIMESTAMP"
-          RENMARIGAYSEX
+            LASTMSGTIMESTAMP=$TIMESTAMP
+            # echo "setting to $LASTMSGTIMESTAMP"
+            RENMARIGAYSEX
         fi
     done
 }
