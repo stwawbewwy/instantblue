@@ -22,6 +22,7 @@ set $menu wofi
 
 ### Appearance
 client.focused #2962a3 #2962a3 #ffffff #ffa300
+client.focused_inactive #2962a3 #2962a3 #728caa
 client.unfocused #1d3959 #1d3959 #728caa
 
 # window corner radius in px
@@ -86,7 +87,9 @@ exec swayidle -w \
 #
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
-input * accel_profile flat
+input * {
+    accel_profile flat
+}
 input "2:14:ETPS/2_Elantech_Touchpad" {
     events disabled
 }
@@ -115,7 +118,7 @@ input "2:14:ETPS/2_Elantech_Touchpad" {
     bindsym $mod+Shift+c reload
 
     # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You wanna cry?' -B 'Exit sway' 'swaymsg exit' -B 'Shut down' 'poweroff'
+    bindsym $mod+Shift+e exec swaynag -t warning -m 'You wanna cry?' -B 'Exit sway' 'swaymsg exit' -B 'Restart' 'systemctl reboot' -B 'Shut down' 'poweroff'
 #
 # Moving around:
 #
@@ -277,6 +280,7 @@ bindsym button5 nop
 bindsym $mod+p exec grimshot --notify copy area
 bindsym $mod+Shift+p exec grimshot --notify --cursor copy output
 bindsym $mod+Ctrl+p exec grimshot --notify --cursor copy active
+bindsym $mod+Print exec grimshot --notify --cursor save output
 
 bindsym $mod+Shift+BackSpace exec swaylock -f -i ~/.config/sway/wallpaper.png -s fill --clock --indicator --effect-blur 2x5
 
@@ -296,13 +300,15 @@ bindsym --release XF86AudioMute exec pkill -SIGRTMIN+10 i3blocks
 titlebar_separator enable
 gaps inner 20
 focus_follows_mouse no
-font ComicMono 12
+font Comic Mono 13
 
 exec_always otd-daemon &
 exec vesktop
 exec librewolf
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 
-assign [class="vesktop"] workspace $ws2
+assign [class="vesktop"] workspace $ws10
+for_window [title="Quick Format Citation"] floating enable
+for_window [title="Progress"] floating enable
 
 include /etc/sway/config.d/*
