@@ -19,23 +19,23 @@ RENMARIGAYSEX () {
                 SHOW_WARNING=$((SHOW_WARNING+1))
             fi
         elif [[ BATPERC -le 20 ]]; then
-            BATFORMATTED="󰁺 $BATPERC%"
-        elif [[ BATPERC -le 30 ]]; then
             BATFORMATTED="󰁻 $BATPERC%"
-        elif [[ BATPERC -le 40 ]]; then
+        elif [[ BATPERC -le 30 ]]; then
             BATFORMATTED="󰁼 $BATPERC%"
-        elif [[ BATPERC -le 50 ]]; then
+        elif [[ BATPERC -le 40 ]]; then
             BATFORMATTED="󰁽 $BATPERC%"
-        elif [[ BATPERC -le 60 ]]; then
+        elif [[ BATPERC -le 50 ]]; then
             BATFORMATTED="󰁾 $BATPERC%"
-        elif [[ BATPERC -le 70 ]]; then
+        elif [[ BATPERC -le 60 ]]; then
             BATFORMATTED="󰁿 $BATPERC%"
-        elif [[ BATPERC -le 80 ]]; then
+        elif [[ BATPERC -le 70 ]]; then
             BATFORMATTED="󰂀 $BATPERC%"
-        elif [[ BATPERC -le 90 ]]; then
+        elif [[ BATPERC -le 80 ]]; then
             BATFORMATTED="󰂁 $BATPERC%"
-        elif [[ BATPERC -le 100 ]]; then
+        elif [[ BATPERC -le 90 ]]; then
             BATFORMATTED="󰂂 $BATPERC%"
+        elif [[ BATPERC -le 100 ]]; then
+            BATFORMATTED="󰁹 $BATPERC%"
         fi
     fi
 
@@ -43,7 +43,7 @@ RENMARIGAYSEX () {
 }
 
 LASTMSGTIMESTAMP=""
-upower -m | {
+dbus-monitor --system --profile "path=/org/freedesktop/UPower/devices/battery_BAT0,member=PropertiesChanged" | {
     while read -r LASTMSG; do
         TIMESTAMP=${LASTMSG:0:14}
         # echo "current: $TIMESTAMP"

@@ -1,0 +1,57 @@
+$background: #1d3959;
+$focused-background: #2962a3;
+
+* {
+  font-family: "Jetbrains Mono";
+  color: #ffffff;
+}
+
+.main {
+  background-color: transparent;
+  padding: 10px 6px 0 10px;
+}
+
+.main-bar {
+  background-color: transparent;
+}
+
+.left-bar {
+  background-color: transparent;
+  border-radius: 12px;
+}
+
+.center-bar {
+  background-color: $background;
+  border-radius: 12px;
+}
+
+.right-bar {
+  background-color: $background;
+  border-radius: 12px;
+}
+
+.music {
+  padding: 0 0 0 10px;
+}
+
+.battery {
+  padding: 0 10px 0 0;
+}
+
+.time {
+  padding: 0 10px 0 10px;
+}
+
+.workspaces button:hover {
+  background-color: $focused-background;
+}
+
+.focused {
+  background-color: $focused-background;
+  border-radius: 12px;
+}
+
+.unfocused {
+  background-color: $background;
+  border-radius: 12px;
+}

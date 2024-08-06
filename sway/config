@@ -14,30 +14,37 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term wezterm
+set $term foot
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $menu wofi
+set $menu tofi-drun --drun-launch=true
+
+set $sensitivity -0.9375
+
+set $focused #2962a3
+set $unfocused #1d3959
+set $focused_inactive #f7768e
+set $focused_text #ffffff
 
 ### Appearance
-client.focused #2962a3 #2962a3 #ffffff #ffa300
-client.focused_inactive #2962a3 #2962a3 #728caa
-client.unfocused #1d3959 #1d3959 #728caa
+client.focused $focused $focused $focused_text $focused_inactive
+client.focused_inactive $focused_inactive $focused_inactive $focused_text
+client.unfocused $unfocused $unfocused #728caa
 
 # window corner radius in px
 corner_radius 0
 
 # Window background blur
-blur on
+blur off
 blur_xray off
 blur_passes 2
 blur_radius 2
 
-shadows off
-shadows_on_csd off
+shadows disable
+shadows_on_csd enable
 shadow_blur_radius 20
-shadow_color #0000007F
+shadow_color #ffffff
 
 # inactive window fade amount. 0.0 = no dimming, 1.0 = fully dimmed
 default_dim_inactive 0.0
@@ -54,6 +61,10 @@ output * bg ~/.config/sway/wallpaper.png fill
 output eDP-1 {
     resolution 1920x1080
 }
+
+output HDMI-A-1 {
+    mode 1440x900@74.984Hz
+}
 #
 # Example configuration:
 #
@@ -66,9 +77,10 @@ output eDP-1 {
 # Example configuration:
 #
 exec swayidle -w \
-    timeout 300 'swaylock -f -i ~/.config/sway/wallpaper.png -s fill --clock --indicator --effect-blur 2x5' \
+    timeout 300 'swaylock -f -i ~/.config/sway/wallpaper.png -s fill --clock --indicator --effect-blur 2x5 --datestr "%a, %d/%m/%Y"' \
     timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-    before-sleep 'swaylock -f -i ~/.config/sway/wallpaper.png -s fill --clock --indicator --effect-blur 2x5'
+    timeout 660 '~/.config/sway/sleep.sh' \
+    before-sleep 'swaylock -f -i ~/.config/sway/wallpaper.png -s fill --clock --indicator --effect-blur 2x5 --datestr "%a, %d/%m/%Y"'
 #
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
@@ -92,6 +104,17 @@ input * {
 }
 input "2:14:ETPS/2_Elantech_Touchpad" {
     events disabled
+}
+
+input "0:0:OpenTabletDriver_Virtual_Artist_Tablet" map_to_output eDP-1
+
+input "7511:64096:Beken_2.4G_Wireless_Device" pointer_accel $sensitivity
+
+input "7511:64097:Beken_USB_Gaming_Mouse" pointer_accel $sensitivity
+
+input * {
+    repeat_rate 40
+    repeat_delay 300
 }
 
 ### Key bindings
@@ -118,7 +141,7 @@ input "2:14:ETPS/2_Elantech_Touchpad" {
     bindsym $mod+Shift+c reload
 
     # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You wanna cry?' -B 'Exit sway' 'swaymsg exit' -B 'Restart' 'systemctl reboot' -B 'Shut down' 'poweroff'
+    bindsym $mod+Shift+e exec swaynag -t warning -m 'Bleh' -B 'Exit sway' 'swaymsg exit' -B 'Restart' 'systemctl reboot' -B 'Shut down' 'poweroff'
 #
 # Moving around:
 #
@@ -128,10 +151,10 @@ input "2:14:ETPS/2_Elantech_Touchpad" {
     bindsym $mod+$up focus up
     bindsym $mod+$right focus right
     # Move focus between display
-    bindsym $mod+Left focus output left
-    bindsym $mod+Down focus output down
-    bindsym $mod+Up focus output up
-    bindsym $mod+Right focus output right
+    bindsym $mod+Ctrl+$left focus output left
+    bindsym $mod+Ctrl+$down focus output down
+    bindsym $mod+Ctrl+$up focus output up
+    bindsym $mod+Ctrl+$right focus output right
 
     # Move the focused window with the same, but add Shift
     bindsym $mod+Shift+$left move left
@@ -244,71 +267,53 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-#
-# Status Bar:
-#
-# Read `man 5 sway-bar` for more information about this section.
-bar {
-    position top
-
-    tray_output none
-
-    # When the status_command prints a new line to stdout, swaybar updates.
-    # The default just shows the current date and time.
-    # status_command while ~/.config/sway/status.sh; do sleep 30; done
-    status_command i3blocks
-
-    status_edge_padding 20
-
-    separator_symbol "|"
-
-    colors {
-        statusline #ffffff
-        background #1d3959
-
-        inactive_workspace #1d3959 #1d3959 #728caa
-        focused_workspace #2962a3 #2962a3 #ffffff
-    }
-
-    bindsym button4 nop
-    bindsym button5 nop
-}
-
-bindsym button4 nop
-bindsym button5 nop
-
-bindsym $mod+p exec grimshot --notify copy area
-bindsym $mod+Shift+p exec grimshot --notify --cursor copy output
-bindsym $mod+Ctrl+p exec grimshot --notify --cursor copy active
+bindsym $mod+p exec grimshot save area - | swappy -f -
+bindsym $mod+Shift+p exec grimshot --cursor save output - | swappy -f -
+bindsym $mod+Ctrl+p exec grimshot --cursor save active - | swappy -f -
 bindsym $mod+Print exec grimshot --notify --cursor save output
 
-bindsym $mod+Shift+BackSpace exec swaylock -f -i ~/.config/sway/wallpaper.png -s fill --clock --indicator --effect-blur 2x5
+bindsym $mod+Shift+BackSpace exec swaylock -f -i ~/.config/sway/wallpaper.png -s fill --clock --indicator --effect-blur 2x5 --datestr '%a, %d/%m/%Y'
 
-bindsym XF86MonBrightnessDown exec "brightnessctl set 51-; notify-send -t 5000 'Brightness' $(($(($(brightnessctl g)*100))/255))"
-bindsym --release XF86MonBrightnessDown exec pkill -SIGRTMIN+20 i3blocks
-bindsym XF86MonBrightnessUp exec "brightnessctl set 51+; notify-send -t 5000 'Brightness' $(($(($(brightnessctl g)*100))/255))"
-bindsym --release XF86MonBrightnessUp exec pkill -SIGRTMIN+20 i3blocks
+bindsym XF86MonBrightnessDown exec "brightnessctl set 15-; notify-send -t 5000 'Brightness' $(($(($(brightnessctl g)*100))/255))"
+# bindsym --release XF86MonBrightnessDown exec pkill -SIGRTMIN+20 i3blocks
+bindsym XF86MonBrightnessUp exec "brightnessctl set 15+; notify-send -t 5000 'Brightness' $(($(($(brightnessctl g)*100))/255))"
+# bindsym --release XF86MonBrightnessUp exec pkill -SIGRTMIN+20 i3blocks
 
 bindsym XF86AudioRaiseVolume exec "amixer set Master 5%+; notify-send -t 5000 'Audio' $(amixer get Master | awk -F"[][]" '/Left:/ { print $2 }')"
-bindsym --release XF86AudioRaiseVolume exec pkill -SIGRTMIN+10 i3blocks
+# bindsym --release XF86AudioRaiseVolume exec pkill -SIGRTMIN+10 i3blocks
 bindsym XF86AudioLowerVolume exec "amixer set Master 5%-; notify-send -t 5000 'Audio' $(amixer get Master | awk -F"[][]" '/Left:/ { print $2 }')"
-bindsym --release XF86AudioLowerVolume exec pkill -SIGRTMIN+10 i3blocks
+# bindsym --release XF86AudioLowerVolume exec pkill -SIGRTMIN+10 i3blocks
 
 bindsym XF86AudioMute exec "amixer set Master toggle; notify-send -t 5000 'Audio' 'Volume Toggled'"
-bindsym --release XF86AudioMute exec pkill -SIGRTMIN+10 i3blocks
+# bindsym --release XF86AudioMute exec pkill -SIGRTMIN+10 i3blocks
+
+bindsym $mod+m exec mpc toggle
+bindsym $mod+comma exec mpc prev
+bindsym $mod+period exec mpc next
 
 titlebar_separator enable
-gaps inner 20
+default_border pixel 3
+default_floating_border pixel 3
 focus_follows_mouse no
-font Comic Mono 13
+font ComicShannsMono 13
 
 exec_always otd-daemon &
-exec vesktop
-exec librewolf
+exec_always killall nm-applet; nm-applet --indicator
+# exec vesktop
+# exec librewolf
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec eww daemon && eww open main
 
-assign [class="vesktop"] workspace $ws10
+assign [class="vesktop"] workspace $ws4
 for_window [title="Quick Format Citation"] floating enable
 for_window [title="Progress"] floating enable
+for_window [app_id="Thunar"] floating enable
+for_window [app_id="thunar"] floating enable
+for_window [app_id="qalculate-qt"] floating enable
+for_window [app_id="org.prismlauncher.PrismLauncher"] floating enable
+for_window [class="ninjabrainbot-Main"] floating enable
+
+gaps inner 5
+gaps outer 5
 
 include /etc/sway/config.d/*
