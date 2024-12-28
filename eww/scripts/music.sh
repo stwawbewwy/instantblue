@@ -2,7 +2,7 @@
 
 GETMUSIC () {
     MUSICSTATE=$(mpc status [%state%])
-    CURRENTMUSIC=$(mpc current)
+    CURRENTMUSIC=$(mpc current -f "[%title%]")
     if [[ "$MUSICSTATE" == "playing" ]]; then
         MUSICFORMATTED="󰐊 $CURRENTMUSIC"
     elif [[ "$MUSICSTATE" == "paused" ]]; then

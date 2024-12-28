@@ -1,12 +1,18 @@
 $background: #1d3959;
-$focused-background: #2962a3;
+$focused-background: #7aa2f7;
+$text: #ffffff;
+$radius: 5;
 
 * {
   font-family: "Jetbrains Mono";
-  color: #ffffff;
 }
 
 .main {
+  background-color: transparent;
+  padding: 10px 10px 0 10px;
+}
+
+.alt {
   background-color: transparent;
   padding: 10px 10px 0 10px;
 }
@@ -17,41 +23,50 @@ $focused-background: #2962a3;
 
 .left-bar {
   background-color: transparent;
-  border-radius: 12px;
+  border-radius: $radius;
 }
 
 .center-bar {
   background-color: $background;
-  border-radius: 12px;
+  border-radius: $radius;
+  color: $text;
 }
 
 .right-bar {
   background-color: $background;
-  border-radius: 12px;
+  border-radius: $radius;
+  color: $text;
 }
 
 .music {
   padding: 0 0 0 10px;
 }
 
-.battery {
-  padding: 0 10px 0 0;
-}
-
 .time {
   padding: 0 10px 0 10px;
 }
 
+.systray {
+  padding: 0 10px 0 0;
+}
+
+.workspaces button {
+  border-radius: $radius;
+}
+
 .workspaces button:hover {
   background-color: $focused-background;
+  color: $background;
 }
 
 .focused {
   background-color: $focused-background;
-  border-radius: 12px;
+  color: $background;
+  border-radius: $radius;
 }
 
 .unfocused {
   background-color: $background;
-  border-radius: 12px;
+  color: $text;
+  border-radius: $radius;
 }

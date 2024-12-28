@@ -6,7 +6,7 @@ YOURLIFELITERALLYISASVALUABLEASASUMMERANT () {
 
     declare -a STATUS
 
-    STATUS=$(swaymsg -t get_workspaces | jq 'sort_by(.name | tonumber) | del(.[] | select(.output!="eDP-1"))')
+    STATUS=$(swaymsg -t get_workspaces | jq 'sort_by(.name | tonumber) | del(.[] | select(.output!="HDMI-A-1"))')
 
     echo ${STATUS[*]}
 }

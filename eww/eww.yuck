@@ -4,36 +4,53 @@
                       :y "0px"
                       :width "100%"
                       :height "20px"
-                      :anchor "top center"
-                      )
+                      :anchor "top center")
   :stacking "fg"
   :exclusive true
   :focusable false
   (mainbar))
 
-(defwidget mainbar[?yap]
+(defwindow alt
+  :monitor 1
+  :geometry (geometry :x "0px"
+                      :y "0px"
+                      :width "100%"
+                      :height "20px"
+                      :anchor "top center")
+  :stacking "fg"
+  :exclusive true
+  :focusable false
+  (altbar))
+
+(defwidget altbar[]
+  (box :class "main-bar"
+       :space-evenly true
+       (workspaces-alt :workspaces-alt workspaces-alt)
+       (centerbar)
+       (rightbar)))
+
+(defwidget mainbar[]
   (box :class "main-bar"
        :space-evenly true
        (leftbar)
        (centerbar)
-       (rightbar)
-       ))
+       (rightbar)))
 
-(defwidget leftbar[?yap]
+(defwidget leftbar[]
   (box :class "left-bar"
        :space-evenly false
        :halign "start"
-       (workspaces :workspaces workspaces)
-       ))
+       :spacing 10
+       (workspaces :workspaces workspaces)))
 
-(defwidget centerbar[?yap]
+(defwidget centerbar[]
   (box :class "center-bar"
        :space-evenly false
        :halign "center"
-       (time)
-       ))
+       (launcher)
+       (time)))
 
-(defwidget rightbar[?yap]
+(defwidget rightbar[]
   (box :class "right-bar"
        :space-evenly false
        :halign "end"
@@ -42,13 +59,27 @@
        (volume :volume volume)
        (brightness :brightness brightness)
        (battery :battery battery)
-       ))
+       (systemtray)))
 
 (defwidget music[music]
   (label :class "music"
          :justify "center"
-         :limit-width 40
+         :limit-width 30
          :text music))
+
+(defwidget systemtray[]
+  (systray :class "systray"
+           :spacing 1
+           :orientation "h"
+           :space-evenly true
+           :icon-size 24
+           :prepend-new true))
+
+(defwidget windowname[windowname]
+  (label :class "window-name"
+         :justify "center"
+         :limit-width 30
+         :text windowname))
 
 (defwidget volume[volume]
   (box :class "volume"
@@ -62,7 +93,7 @@
        :halign "end"
        battery))
 
-(defwidget time[?yap]
+(defwidget time[]
   (box :class "time"
        :orientation "horizontal"
        :halign "end"
@@ -81,14 +112,50 @@
        :spacing 5
        :halign "start"
        (for entry in workspaces
-            (button :onclick `swaymsg workspace "${entry.name}"`
-                    :onrightclick `swaymsg workspace "${entry.name}"`
+            (button :onclick 'swaymsg workspace "${entry.name}"'
+                    :onrightclick 'swaymsg workspace "${entry.name}"'
                     :class {entry.focused ? "focused" : "unfocused"}
-                    `${entry.focused ? "" : ""} ${entry.name}`
-                    )
-            )
-       )
-  )
+                    `${entry.focused ? "" : ""} ${entry.name}`))))
+
+(defwidget workspaces-alt[workspaces-alt]
+  (box :class "workspaces"
+       :orientation "horizontal"
+       :space-evenly false
+       :spacing 5
+       :halign "start"
+       (for entry in workspaces-alt
+            (button :onclick 'swaymsg workspace "${entry.name}"'
+                    :onrightclick 'swaymsg workspace "${entry.name}"'
+                    :class {entry.focused ? "focused" : "unfocused"}
+                    `${entry.focused ? "" : ""} ${entry.name}`))))
+
+(defwidget launcher[]
+  (eventbox :class "launcher"
+            :orientation "horizontal"
+            :onclick "tofi-drun --drun-launch=true &"
+            :onrightclick "wlogout &"
+            (catgif)))
+
+(defwidget renkohat[]
+  (image :class "renko-hat"
+         :halign "start"
+         :path "/home/notanyone/.config/eww/assets/renkohat.png"
+         :image-height 32
+         :image-width 32))
+
+(defwidget warmcoffeecup[]
+  (image :class "renko-hat"
+         :halign "start"
+         :path "/home/notanyone/.config/eww/assets/warmcoffeecup.png"
+         :image-height 32
+         :image-width 32))
+
+(defwidget catgif[]
+  (image :class "cat-gif"
+         :halign "start"
+         :path "/home/notanyone/.config/eww/assets/cat.gif"
+         :image-height 32
+         :image-width 32))
 
 (deflisten music :initial ""
   `~/.config/eww/scripts/music.sh`)
@@ -96,14 +163,20 @@
 (deflisten battery :initial ""
   `~/.config/eww/scripts/battery.sh`)
 
-(deflisten workspaces :initial "${[1]}"
+(deflisten workspaces :initial ""
   `~/.config/eww/scripts/listen-workspaces.sh`)
 
-(defpoll volume :interval "1s"
-  `~/.config/eww/scripts/volume.sh`)
+(deflisten workspaces-alt :initial ""
+  `~/.config/eww/scripts/listen-workspaces-alt.sh`)
 
-(defpoll brightness :interval "1s"
+(deflisten brightness :initial ""
   `~/.config/eww/scripts/brightness.sh`)
 
+(deflisten windowname :initial ""
+  `~/.config/eww/scripts/listen-windows.sh`)
+
+(defpoll volume :interval "10s"
+  `~/.config/eww/scripts/volume.sh`)
+
 (defpoll time :interval "1s"
-  `echo "󰃭 $(date +"%a %d-%m-%y") 󰥔 $(date +"%T")"`)
+  `echo "󰃭 $(date +"%a %d/%m/%y") 󰥔 $(date +"%R")"`)
